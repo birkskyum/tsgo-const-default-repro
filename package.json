@@ -1,0 +1,9 @@
+{
+  "name": "tsgo-repro",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^6.0.2",
+    "@typescript/native-preview": "7.0.0-dev.20260502.1"
+  }
+}
