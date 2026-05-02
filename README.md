@@ -1,14 +1,18 @@
 # tsgo-const-default-repro
 
 Self-contained reproduction of a `tsgo` (TypeScript native preview) inference
-regression vs. `tsc`. Filed against
+behavioural difference vs. `tsc`. Filed against
 [microsoft/typescript-go](https://github.com/microsoft/typescript-go).
+
+Two dev dependencies: `typescript` and `@typescript/native-preview`.
 
 ## TL;DR
 
 A `const T extends string = string` parameter, given an argument of static
-type `never`, should infer `T = never`. `tsc` does. `tsgo` binds `T` to the
-constraint default `string` instead.
+type `never`, infers `T = never` under `tsc` and binds `T = string` (the
+constraint default) under `tsgo`. The two bindings diverge on a downstream
+conditional `string extends T ? 'wide' : 'narrow'`, producing a `TS2322`
+under `tsgo` only.
 
 ## Run
 
@@ -66,14 +70,13 @@ Each of the four is load-bearing — drop any one and both compilers agree:
    `type Paths<T> = string` makes the bug disappear, even though both branches
    of the conditional return `string`.
 
-## Why this matters in the wild
+## Where this surfaces in real code
 
-Originally observed against `@tanstack/react-router@1.169.x`. Calls like
-`<Link from={fullPath as never} {...props} />` in
+Observed against [`@tanstack/react-router@1.169.x`](https://www.npmjs.com/package/@tanstack/react-router):
+calls like `<Link from={fullPath as never} {...props} />` in
 [`packages/react-router/src/route.tsx#L162-L165`](https://github.com/TanStack/router/blob/main/packages/react-router/src/route.tsx#L162-L165)
-emit `TS2741`, because `from` flows through TanStack's
-`ConstrainLiteral<T, RoutePaths<TRouter['routeTree']>>` (the `(T & C) | C`
-shape above) with a `MakeToRequired` conditional on the same `T`.
+emit `TS2741`. There, `from` flows through `ConstrainLiteral<T, RoutePaths<TRouter['routeTree']>>`
+(the `(T & C) | C` shape above) with a `MakeToRequired` conditional on the same `T`.
 
 ## Related
 
