@@ -19,7 +19,7 @@ under `tsgo` only.
 ```sh
 pnpm install
 ./node_modules/.bin/tsc      # exit 0, no diagnostics
-./node_modules/.bin/tsgo     # error TS2322 on line 41
+./node_modules/.bin/tsgo     # error TS2322 on line 25
 ```
 
 Versions verified:
@@ -51,7 +51,7 @@ f({ from: 'x' as never, via: 'narrow' })   // T should be `never`
 Expected `tsgo` output:
 
 ```
-repro.ts(13,25): error TS2322: Type '"narrow"' is not assignable to type '"wide"'.
+repro.ts(25,25): error TS2322: Type '"narrow"' is not assignable to type '"wide"'.
 ```
 
 ## Required ingredients
