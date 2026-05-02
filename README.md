@@ -56,16 +56,16 @@ repro.ts(13,25): error TS2322: Type '"narrow"' is not assignable to type '"wide"
 
 ## Required ingredients
 
-Each of the four is load-bearing — drop any one and both compilers agree:
+Each of the four is load-bearing. Drop any one and both compilers agree.
 
 1. `const T extends string = string` (with the `string` default).
 2. A sibling generic parameter `R` constrained to a structural type. Replacing
-   `R['p']` with a fixed (non-generic) indexed access — e.g.
-   `type X = { p: any }; ...Paths<X['p']>` — makes the bug disappear.
+   `R['p']` with a fixed (non-generic) indexed access, for example
+   `type X = { p: any }; ...Paths<X['p']>`, makes the bug disappear.
 3. The prop holding the inferred value is typed `(T & C) | C` where `C` goes
    through an indexed access into the *generic* `R`. A bare `T` does not
    trigger.
-4. `Paths<T>` is a *conditional* type that resolves to `string` —
+4. `Paths<T>` is a *conditional* type that resolves to `string`, namely
    `unknown extends T ? string : string`. Replacing it with the bare alias
    `type Paths<T> = string` makes the bug disappear, even though both branches
    of the conditional return `string`.
@@ -82,6 +82,6 @@ emit `TS2741`. There, `from` flows through `ConstrainLiteral<T, RoutePaths<TRout
 
 Same family as [microsoft/typescript-go#2797](https://github.com/microsoft/typescript-go/issues/2797),
 fixed by [#2803](https://github.com/microsoft/typescript-go/pull/2803). That
-fix was scoped to JSX-children context-sensitive discrimination — this case
+fix was scoped to JSX-children context-sensitive discrimination. This case
 is a plain function call (no JSX, no children) and is still live three months
 after #2803 merged.

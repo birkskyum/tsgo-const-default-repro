@@ -20,6 +20,6 @@ f({ from: 'x', via: 'narrow' })            // T = 'x'   -> via 'narrow'  (both O
 f({ from: 'x' as 'x', via: 'narrow' })     // T = 'x'   -> via 'narrow'  (both OK)
 
 // tsc : OK   (T inferred as `never`  -> `string extends never`? false -> 'narrow')
-// tsgo: error TS2322 — Type '"narrow"' is not assignable to type '"wide"'.
+// tsgo: error TS2322. Type '"narrow"' is not assignable to type '"wide"'.
 //        (T bound as `string` (default) -> conditional resolves to 'wide')
 f({ from: 'x' as never, via: 'narrow' })
